@@ -14,7 +14,13 @@ trait GroupOps {
    * @return
    */
   def isRectangleInGroup(rect: Rectangle, group: Group) : Boolean = {
-    false
+    val groupUpperLeftBound = group.boundaries.upperLeft
+    val groupLowerRightBound = group.boundaries.lowerRight
+
+    groupUpperLeftBound.x <= rect.upperLeft.x &&
+      groupUpperLeftBound.y <= rect.upperLeft.y &&
+      groupLowerRightBound.x >= rect.lowerRight.x &&
+      groupLowerRightBound.y >= rect.lowerRight.y
   }
 
 }
