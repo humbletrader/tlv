@@ -19,7 +19,9 @@ trait ContourOps {
     val (upperLeftX, upperLeftY, lowerRightX, lowerRightY) =
       rectangles.map(rect =>
         (rect.upperLeft.x, rect.upperLeft.y, rect.lowerRight.x, rect.lowerRight.y)
-      ).reduce{case ((minUlx, minUly, maxLrx, maxLry), (ulx, uly, lrx, lry)) =>
+      ).reduce{(agg, newValue) =>
+        val (minUlx, minUly, maxLrx, maxLry) = agg
+        val (ulx, uly, lrx, lry) = newValue
         (minUlx min ulx, minUly min uly, maxLrx max lrx, maxLry max lry)
       }
 
