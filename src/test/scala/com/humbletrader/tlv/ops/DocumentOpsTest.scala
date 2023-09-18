@@ -1,6 +1,6 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Group, Rectangle, ToleranceConfig, ScannedDocument}
+import com.humbletrader.tlv.data.{ContourGroup, Rectangle, ToleranceConfig, ScannedDocument}
 import org.scalatest.FunSuite
 
 class DocumentOpsTest extends FunSuite{
@@ -11,9 +11,9 @@ class DocumentOpsTest extends FunSuite{
     implicit val config : ToleranceConfig = ToleranceConfig(1)
 
     val document = Set(
-      Group("close on left", Rectangle(0, 0, 99, 99)),
-      Group("not close", Rectangle(0, 100, 98, 199)),
-      Group("close on right", Rectangle(201, 150, 400, 200))
+      ContourGroup("close on left", Rectangle(0, 0, 99, 99)),
+      ContourGroup("not close", Rectangle(0, 100, 98, 199)),
+      ContourGroup("close on right", Rectangle(201, 150, 400, 200))
     )
 
     val closeEnoughGroups = underTest.findCloseGroups(Rectangle(100, 100, 200, 200), document)
@@ -24,14 +24,14 @@ class DocumentOpsTest extends FunSuite{
   implicit val config : ToleranceConfig = ToleranceConfig(1)
 
   test("adding contour on empty document"){
-    val resultDocument = underTest.addContour(Rectangle(100,100,200,200), ScannedDocument(Seq.empty))
-    assert(resultDocument.groups.map(_.boundaries) == Seq(Rectangle(100, 100, 200, 200)))
+    val resultDocument = underTest.addContour(Rectangle(100,100,200,200), ScannedDocument.empty())
+    assert(resultDocument.groups.map(_.boundaries) == Set(Rectangle(100, 100, 200, 200)))
   }
 
   test("adding contour over document with far away groups") {
     val contour = Rectangle(100, 100, 200, 200)
-    val currentDocument = ScannedDocument(Seq(
-      Group("footer", Rectangle(0, 900, 1000, 1000))
+    val currentDocument = ScannedDocument(Set(
+      ContourGroup("footer", Rectangle(0, 900, 1000, 1000))
     ))
 
     val resultDocument = underTest.addContour(contour, currentDocument)
@@ -40,12 +40,12 @@ class DocumentOpsTest extends FunSuite{
 
   test("adding contour over document with one close enough group") {
     val contour = Rectangle(201, 50, 300, 70)
-    val currentDocument = ScannedDocument(Seq(
-      Group("header", Rectangle(0, 0, 200, 100))
+    val currentDocument = ScannedDocument(Set(
+      ContourGroup("header", Rectangle(0, 0, 200, 100))
     ))
 
     val resultDocument = underTest.addContour(contour, currentDocument)
-    assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 300, 100)))
+    assert(resultDocument.groups.map(_.boundaries) == Set(Rectangle(0, 0, 300, 100)))
   }
 
   /**
@@ -55,15 +55,15 @@ class DocumentOpsTest extends FunSuite{
    */
   test("add contour close to two groups (on on left and another one on right)") {
 
-    val currentDocument = ScannedDocument(Seq(
-      Group("first", Rectangle(0, 0, 200, 100)),
+    val currentDocument = ScannedDocument(Set(
+      ContourGroup("first", Rectangle(0, 0, 200, 100)),
       // there's gap between 200 and 500
-      Group("second", Rectangle(500, 0, 700, 100))
+      ContourGroup("second", Rectangle(500, 0, 700, 100))
     ))
 
     val contour = Rectangle(201, 50, 499, 70)
     val resultDocument = underTest.addContour(contour, currentDocument)
-    assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 700, 100)))
+    assert(resultDocument.groups.map(_.boundaries) == Set(Rectangle(0, 0, 700, 100)))
   }
 
   /**
@@ -78,15 +78,15 @@ class DocumentOpsTest extends FunSuite{
    */
   test("add contour close to a group and the expanded rectangle becomes close to another group") {
 
-    val currentDocument = ScannedDocument(Seq(
-      Group("first", Rectangle(0, 0, 200, 100)),
+    val currentDocument = ScannedDocument(Set(
+      ContourGroup("first", Rectangle(0, 0, 200, 100)),
       //there's a horizontal gap here
-      Group("second", Rectangle(0, 150, 10, 300))
+      ContourGroup("second", Rectangle(0, 150, 10, 300))
     ))
 
     val contour = Rectangle(201, 50, 300, 149)
     val resultDocument = underTest.addContour(contour, currentDocument)
-    assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 300, 300)))
+    assert(resultDocument.groups.map(_.boundaries) == Set(Rectangle(0, 0, 300, 300)))
   }
 
 }

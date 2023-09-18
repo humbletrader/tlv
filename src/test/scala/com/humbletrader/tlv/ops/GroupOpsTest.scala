@@ -1,7 +1,7 @@
 package com.humbletrader.tlv.ops
 
 import org.scalatest.FunSuite
-import com.humbletrader.tlv.data.{Group, Rectangle, ToleranceConfig}
+import com.humbletrader.tlv.data.{ContourGroup, Rectangle, ToleranceConfig}
 
 class GroupOpsTest extends FunSuite{
 
@@ -10,7 +10,7 @@ class GroupOpsTest extends FunSuite{
   implicit val configuration = ToleranceConfig(1)
 
   test("check rectangle horizontally close to the group") {
-    val group = Group("test group", Rectangle(100, 100, 200, 200))
+    val group = ContourGroup("test group", Rectangle(100, 100, 200, 200))
 
     val rectangleFarOnRight = Rectangle(202, 100, 350, 200)
     assert(!underTest.isRectHorizClose(rectangleFarOnRight, group))
@@ -29,7 +29,7 @@ class GroupOpsTest extends FunSuite{
   }
 
   test("check rectangle vertically close"){
-    val group = Group("test", Rectangle(100, 100, 200, 200))
+    val group = ContourGroup("test", Rectangle(100, 100, 200, 200))
 
     val farAboveRect = Rectangle(0,0,10,10)
     assert(!underTest.isRectVertClose(farAboveRect, group))

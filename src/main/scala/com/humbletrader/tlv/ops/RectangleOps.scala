@@ -1,6 +1,6 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Point, Rectangle}
+import com.humbletrader.tlv.data.{Rectangle}
 
 trait RectangleOps {
 

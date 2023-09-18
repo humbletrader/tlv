@@ -1,6 +1,6 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Group, Rectangle, ToleranceConfig, ScannedDocument}
+import com.humbletrader.tlv.data.{ContourGroup, Rectangle, ToleranceConfig, ScannedDocument}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -17,9 +17,9 @@ trait DocumentOps extends GroupOps with RectangleOps {
    * @param config
    * @return
    */
-  def findCloseGroups(rect: Rectangle, groups: collection.Set[Group])
-                     (implicit config: ToleranceConfig) : Set[Group] = {
-    groups.foldLeft(ArrayBuffer.empty[Group]){(agg, group) =>
+  def findCloseGroups(rect: Rectangle, groups: collection.Set[ContourGroup])
+                     (implicit config: ToleranceConfig) : Set[ContourGroup] = {
+    groups.foldLeft(ArrayBuffer.empty[ContourGroup]){ (agg, group) =>
         if(isRectangleClose(rect, group)) agg += group
         else agg
       }
@@ -37,8 +37,8 @@ trait DocumentOps extends GroupOps with RectangleOps {
                 (implicit config: ToleranceConfig) : ScannedDocument = {
 
     var expandingRectangle = rect
-    val resultGroups = mutable.HashSet[Group](document.groups: _*) //todo : change this
-    var closeEnoughGroups : Set[Group] = Set.empty
+    val resultGroups = document.groups.to[collection.mutable.Set]
+    var closeEnoughGroups : Set[ContourGroup] = Set.empty
 
     do{
       closeEnoughGroups = findCloseGroups(expandingRectangle, resultGroups)
@@ -49,13 +49,15 @@ trait DocumentOps extends GroupOps with RectangleOps {
       )
 
       //remove groups which are close enough to our contour/rectangle
-      closeEnoughGroups.foreach { g => resultGroups.remove(g)}
+      closeEnoughGroups.foreach { g =>
+        //todo: there's an extra iteration here which was kept for readability purposes
+        //otherwise the removal of groups should have been included in the findGroups operation
+        resultGroups.remove(g)
+      }
 
+      //iterate as long as you keep finding groups which are close
     }while(closeEnoughGroups.nonEmpty && resultGroups.nonEmpty)
 
-    //todo: improve below
-    ScannedDocument(resultGroups.toSeq ++ Seq(Group("merged group", expandingRectangle)))
+    ScannedDocument(resultGroups + ContourGroup("merged group", expandingRectangle))
   }
-
-
 }

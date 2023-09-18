@@ -17,7 +17,7 @@ object MainApp extends DocumentOps{
       //add here
     )
 
-    var document = ScannedDocument(Seq.empty)
+    var document = ScannedDocument.empty()
     inputRectangles.foreach{contour =>
       document = addContour(contour, document)
     }

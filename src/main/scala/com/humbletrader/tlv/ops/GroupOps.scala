@@ -1,6 +1,6 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Group, Rectangle, ToleranceConfig}
+import com.humbletrader.tlv.data.{ContourGroup, Rectangle, ToleranceConfig}
 
 /**
  * operations for groups
@@ -14,13 +14,13 @@ trait GroupOps {
    * @param conf
    * @return
    */
-  def isRectHorizClose(rect: Rectangle, group: Group)
+  def isRectHorizClose(rect: Rectangle, group: ContourGroup)
                       (implicit conf: ToleranceConfig) : Boolean = {
     val groupRectangle = group.boundaries
-    val groupX = groupRectangle.upperLeft.x + groupRectangle.lowerRight.x
-    val rectX = rect.upperLeft.x + rect.lowerRight.x
+    val sumXGroup = groupRectangle.upperLeft.x + groupRectangle.lowerRight.x
+    val sumXRect = rect.upperLeft.x + rect.lowerRight.x
 
-    (groupX - rectX).abs <= groupRectangle.length + rect.length + 2 * conf.tolerance
+    (sumXGroup - sumXRect).abs <= groupRectangle.length + rect.length + 2 * conf.tolerance
   }
 
   /**
@@ -30,11 +30,11 @@ trait GroupOps {
    * @param conf
    * @return
    */
-  def isRectVertClose(rect: Rectangle, group: Group)(implicit conf: ToleranceConfig) : Boolean = {
+  def isRectVertClose(rect: Rectangle, group: ContourGroup)(implicit conf: ToleranceConfig) : Boolean = {
     val groupRect = group.boundaries
-    val groupY = groupRect.upperLeft.y + groupRect.lowerRight.y
-    val rectY = rect.upperLeft.y + rect.lowerRight.y
-    (groupY - rectY).abs <= groupRect.width + rect.width + 2 * conf.tolerance
+    val sumYGroup = groupRect.upperLeft.y + groupRect.lowerRight.y
+    val sumYRect = rect.upperLeft.y + rect.lowerRight.y
+    (sumYGroup - sumYRect).abs <= groupRect.width + rect.width + 2 * conf.tolerance
   }
 
   /**
@@ -44,7 +44,7 @@ trait GroupOps {
    * @param conf
    * @return
    */
-  def isRectangleClose(rect: Rectangle, group: Group)
+  def isRectangleClose(rect: Rectangle, group: ContourGroup)
                       (implicit conf: ToleranceConfig) : Boolean =
     isRectHorizClose(rect, group) && isRectVertClose(rect, group)
 
