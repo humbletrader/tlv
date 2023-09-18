@@ -1,15 +1,15 @@
 package com.humbletrader.tlv.data
 
 
-object Rectangle{
-  def apply(upperLeftX: Int, upperLeftY: Int, lowerRightX: Int, lowerRightY: Int) : Rectangle =
-    Rectangle(
+object Contour{
+  def apply(upperLeftX: Int, upperLeftY: Int, lowerRightX: Int, lowerRightY: Int) : Contour =
+    Contour(
       Point(upperLeftX, upperLeftY),
       Point(lowerRightX, lowerRightY)
     )
 }
 
-case class Rectangle(upperLeft: Point, lowerRight:Point){
+case class Contour(upperLeft: Point, lowerRight:Point){
 
   //validate that lowerRight is lower than upperLeft
   assert(lowerRight.y > upperLeft.y, "invalid rectangle: lower right corner is above upper left")

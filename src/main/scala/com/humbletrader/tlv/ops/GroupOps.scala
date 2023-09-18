@@ -1,6 +1,6 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{ContourGroup, Rectangle, ToleranceConfig}
+import com.humbletrader.tlv.data.{ContourGroup, Contour, ToleranceConfig}
 
 /**
  * operations for groups
@@ -14,7 +14,7 @@ trait GroupOps {
    * @param conf
    * @return
    */
-  def isRectHorizClose(rect: Rectangle, group: ContourGroup)
+  def isRectHorizClose(rect: Contour, group: ContourGroup)
                       (implicit conf: ToleranceConfig) : Boolean = {
     val groupRectangle = group.boundaries
     val sumXGroup = groupRectangle.upperLeft.x + groupRectangle.lowerRight.x
@@ -30,7 +30,7 @@ trait GroupOps {
    * @param conf
    * @return
    */
-  def isRectVertClose(rect: Rectangle, group: ContourGroup)(implicit conf: ToleranceConfig) : Boolean = {
+  def isRectVertClose(rect: Contour, group: ContourGroup)(implicit conf: ToleranceConfig) : Boolean = {
     val groupRect = group.boundaries
     val sumYGroup = groupRect.upperLeft.y + groupRect.lowerRight.y
     val sumYRect = rect.upperLeft.y + rect.lowerRight.y
@@ -44,7 +44,7 @@ trait GroupOps {
    * @param conf
    * @return
    */
-  def isRectangleClose(rect: Rectangle, group: ContourGroup)
+  def isRectangleClose(rect: Contour, group: ContourGroup)
                       (implicit conf: ToleranceConfig) : Boolean =
     isRectHorizClose(rect, group) && isRectVertClose(rect, group)
 

@@ -1,15 +1,15 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Rectangle}
+import com.humbletrader.tlv.data.Contour
 
-trait RectangleOps {
+trait ContourOps {
 
   /**
    * computes the coordinates of a rectangle which contains all given set of rectangles
    * @param rectangles
    * @return
    */
-  def computeEnclosingRectangle(rectangles: Set[Rectangle]) : Rectangle = {
+  def computeEnclosingRectangle(rectangles: Set[Contour]) : Contour = {
 
     val (upperLeftX, upperLeftY, lowerRightX, lowerRightY) =
       rectangles.map(rect =>
@@ -21,7 +21,7 @@ trait RectangleOps {
         (minUlx min ulx, minUly min uly, maxLrx max lrx, maxLry max lry)
       }
 
-    Rectangle(upperLeftX , upperLeftY, lowerRightX, lowerRightY)
+    Contour(upperLeftX , upperLeftY, lowerRightX, lowerRightY)
   }
 
 }
