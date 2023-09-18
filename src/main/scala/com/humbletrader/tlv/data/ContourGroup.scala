@@ -6,3 +6,5 @@ package com.humbletrader.tlv.data
  * @param boundaries  the boundaries of the group
  */
 case class ContourGroup(name: String, boundaries: Contour)
+//todo: if needed the composing rectangles/contours may be kept here
+// but for the moment we only keep the big enclosing aread

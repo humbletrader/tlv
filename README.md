@@ -33,3 +33,6 @@ The whole application is based on the assumption that the document ( id card, dr
    * the most important improvement is to scan the groups only once for each new contour that is added to the document. ( probably an index with rectangle coordinates will decrease significantly the number of scans but multiple iteration may still be possible)
    * read the input from command line
    * read the config from command line
+   * some implicit classes may be created to improve readability of the code 
+     * Example : instead of ```isRectClose(rect: Contour, group: ContourGroup)``` we should add an implicit to the group so that we can write "group isRectClose rect"
+     
