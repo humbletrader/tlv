@@ -1,7 +1,6 @@
 package com.humbletrader.tlv
 
-import com.humbletrader.tlv.data.{Group, Point, Rectangle, ScanConfig, ScannedDocument}
-import com.humbletrader.tlv.detector.GroupDetector
+import com.humbletrader.tlv.data.{Point, Rectangle, ScanConfig, ScannedDocument}
 import com.humbletrader.tlv.ops.DocumentOps
 
 object MainApp extends DocumentOps{

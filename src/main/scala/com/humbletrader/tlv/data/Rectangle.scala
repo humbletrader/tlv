@@ -10,8 +10,14 @@ object Rectangle{
 }
 
 case class Rectangle(upperLeft: Point, lowerRight:Point){
-  //todo: validate that lowerRight is lower than upperLeft
-  //todo: validate that lowerRight is on the right side of upper left
+
+  //validate that lowerRight is lower than upperLeft
+  assert(lowerRight.y > upperLeft.y, "invalid rectangle: lower right corner is above upper left")
+  //validate that lowerRight is on the right side of upper left
+  assert(lowerRight.x > upperLeft.x, "invalid rectangle: lower right corner should be on ther right side of upperLeft corner")
+
+  val length : Int = lowerRight.x - upperLeft.x
+  val width : Int = lowerRight.y - upperLeft.y
 
 
 }

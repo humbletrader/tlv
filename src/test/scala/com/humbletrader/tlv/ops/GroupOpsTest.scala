@@ -7,61 +7,7 @@ class GroupOpsTest extends FunSuite{
 
   val underTest = new GroupOps{}
 
-  test("isRectangleInGroup: same rectangle as group boundaries is inside group"){
-    val groupRectangle = Rectangle(Point(100, 100), Point(200,200))
-    val group = Group("test group", groupRectangle)
-
-    assert(
-      underTest.isRectangleInGroup(groupRectangle, group) === true
-    )
-  }
-
-  test("isRectangleInGroup: rectangle outside group boundaries on upper side ") {
-    val groupRectangle = Rectangle(Point(100, 100), Point(200, 200))
-    val group = Group("test group", groupRectangle)
-    val testRectangle = Rectangle(Point(0, 100), Point(200, 200))
-    assert(
-      underTest.isRectangleInGroup(testRectangle, group) === false
-    )
-  }
-
-  test("isRectangleInGroup: rectangle outside group boundaries on left side ") {
-    val groupRectangle = Rectangle(Point(100, 100), Point(200, 200))
-    val group = Group("test group", groupRectangle)
-    val testRectangle = Rectangle(Point(100, 90), Point(200, 200))
-    assert(
-      underTest.isRectangleInGroup(testRectangle, group) === false
-    )
-  }
-
-  test("isRectangleInGroup: rectangle outside group boundaries on right side ") {
-    val groupRectangle = Rectangle(Point(100, 100), Point(200, 200))
-    val group = Group("test group", groupRectangle)
-    val testRectangle = Rectangle(Point(100, 100), Point(201, 200))
-    assert(
-      underTest.isRectangleInGroup(testRectangle, group) === false
-    )
-  }
-
-  test("isRectangleInGroup: rectangle outside group boundaries on lower side ") {
-    val groupRectangle = Rectangle(Point(100, 100), Point(200, 200))
-    val group = Group("test group", groupRectangle)
-    val testRectangle = Rectangle(Point(100, 100), Point(200, 201))
-    assert(
-      underTest.isRectangleInGroup(testRectangle, group) === false
-    )
-  }
-
-  test("isRectangleInGroup: rectangle completely outside group ") {
-    val groupRectangle = Rectangle(Point(100, 100), Point(200, 200))
-    val group = Group("test group", groupRectangle)
-    val testRectangle = Rectangle(Point(100, 300), Point(200, 400))
-    assert(
-      underTest.isRectangleInGroup(testRectangle, group) === false
-    )
-  }
-
-  test("isRectangleOnRight"){
+  test("check if rectangle is on the right side of the group"){
     val groupRectangle = Rectangle(100, 100, 200, 200)
     val group = Group("test group", groupRectangle)
     val rectangleOnTheRightSideOfGroup = Rectangle(250, 100, 350, 200)
@@ -70,15 +16,15 @@ class GroupOpsTest extends FunSuite{
     )
     val rectangleOnTheLeftSide = Rectangle(0,0, 100, 100)
     assert(
-      underTest.isRectangleOnRight(rectangleOnTheLeftSide, group) == false
+      !underTest.isRectangleOnRight(rectangleOnTheLeftSide, group)
     )
     val rectangleInsideTheGroup = Rectangle(101, 101, 199, 199)
     assert(
-      underTest.isRectangleOnRight(rectangleInsideTheGroup, group) == false
+      underTest.isRectangleOnRight(rectangleInsideTheGroup, group)
     )
-    val rectangleIntersectedWithGroup = Rectangle(150, 150, 300, 300)
+    val rectangleOverlappingTheGroup = Rectangle(150, 150, 300, 300)
     assert(
-      underTest.isRectangleOnRight(rectangleIntersectedWithGroup, group) == false
+      underTest.isRectangleOnRight(rectangleOverlappingTheGroup, group)
     )
   }
 
@@ -102,7 +48,45 @@ class GroupOpsTest extends FunSuite{
     val group = Group("test group", groupRectangle)
     val rectangleOnTheLeftSideOfGroup = Rectangle(0, 0, 99, 99)
     assert(
-      underTest.distanceOnTheLeft(rectangleOnTheLeftSideOfGroup, group) == 1
+      underTest.horizDistanceOnLeft(rectangleOnTheLeftSideOfGroup, group) == 1
+    )
+  }
+
+  test("distanceAbove") {
+    val groupRectangle = Rectangle(100, 100, 200, 200)
+    val group = Group("test group", groupRectangle)
+    val rectangleAbove = Rectangle(0, 0, 99, 99)
+    assert(
+      underTest.horizDistanceOnLeft(rectangleAbove, group) == 1
+    )
+
+    val rectangleFarAbove = Rectangle(0,0, 50, 50)
+    assert(
+      underTest.verticalDistanceUp(rectangleFarAbove, group) == 50
+    )
+  }
+
+  test("isRectangleAboveGroup") {
+    val groupRectangle = Rectangle(100, 100, 200, 200)
+    val group = Group("test group", groupRectangle)
+    val rectangleCloseAbove = Rectangle(0, 0, 99, 99)
+    assert(
+      underTest.isRectangleOnLeft(rectangleCloseAbove, group) == true
+    )
+
+    val rectangleOnTheRightSide = Rectangle(201, 0, 300, 300)
+    assert(
+      underTest.isRectangleOnLeft(rectangleOnTheRightSide, group) == false
+    )
+
+    val rectangleFarAbove = Rectangle(0, 0, 50, 50)
+    assert(
+      underTest.isRectangleAbove(rectangleFarAbove, group) == true
+    )
+
+    val rectangleOnTheRight = Rectangle(201, 300, 500, 400)
+    assert(
+      underTest.isRectangleAbove(rectangleOnTheRight, group) == false
     )
   }
 
@@ -129,23 +113,23 @@ class GroupOpsTest extends FunSuite{
   }
 
 
-  test("isRectangleCloseOnLeft") {
+  test("rectangle horizontally close to the group") {
     val groupRectangle = Rectangle(100, 100, 200, 200)
     val group = Group("test group", groupRectangle)
 
     val rectangleFarOnRight = Rectangle(202, 100, 350, 200)
     assert(
-      underTest.isRectangleCloseOnLeft(rectangleFarOnRight, group) == false
+      underTest.isRectHorizClose(rectangleFarOnRight, group) == false
     )
 
     val rectangleClose = Rectangle(0, 0, 99, 500)
     assert(
-      underTest.isRectangleCloseOnLeft(rectangleClose, group) == true
+      underTest.isRectHorizClose(rectangleClose, group) == true
     )
 
-    val rectangleFarOnLeft = Rectangle(0, 0, 198, 200)
+    val rectangleUpLeft = Rectangle(0, 0, 198, 99)
     assert(
-      underTest.isRectangleCloseOnLeft(rectangleFarOnLeft, group) == false
+      underTest.isRectHorizClose(rectangleUpLeft, group) == true
     )
   }
 }

@@ -12,7 +12,10 @@ trait DocumentOps extends GroupOps with RectangleOps {
                      (implicit config: ScanConfig) : Set[Group] = {
     groups
       .foldLeft(ArrayBuffer.empty[Group]){(agg, group) =>
-        if(isRectangleCloseOnRight(rect, group) || isRectangleCloseOnLeft(rect, group)) agg += group
+        if(isRectangleCloseOnRight(rect, group) ||
+          isRectangleCloseOnLeft(rect, group) ||
+          isRectangleCloseAbove(rect, group)
+        ) agg += group
         else agg
       }
       .toSet
@@ -26,21 +29,16 @@ trait DocumentOps extends GroupOps with RectangleOps {
     var closeEnoughGroups : Set[Group] = Set.empty
 
     do{
-      println("new iteration")
       closeEnoughGroups = findCloseGroups(expandingRectangle, resultGroups)
-      println(s" found close enough groups $closeEnoughGroups")
-
       //expand the current rectangle to include the close enough groups
       expandingRectangle = enclosingRectangle(
         //todo: change this append
         Set(expandingRectangle) ++ closeEnoughGroups.map(_.boundaries)
       )
-      println(s"rectangle that includes results $expandingRectangle")
 
-      //todo: remove the close enough groups from next scan
-      closeEnoughGroups.foreach { g =>
-        resultGroups.remove(g)
-      }
+      //remove groups which are close enough to our contour/rectangle
+      closeEnoughGroups.foreach { g => resultGroups.remove(g)}
+
     }while(closeEnoughGroups.nonEmpty && resultGroups.nonEmpty)
 
     //todo: improve below

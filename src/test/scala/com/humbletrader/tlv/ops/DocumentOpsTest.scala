@@ -67,21 +67,26 @@ class DocumentOpsTest extends FunSuite{
   }
 
   /**
-   *    before : |first| <---big gap ---> |second|
+   *    before : |first|
+   *                |
+   *               gap
+   *                |
+   *             |second|
    *
-   *    after :  |first|contour|second|
+   *    after :  |first|contour
+   *             |second|
    */
   test("add contour close to a group and the expanded rectangle becomes close to another group") {
 
     val currentDocument = ScannedDocument(Seq(
       Group("first", Rectangle(0, 0, 200, 100)),
-      // there's gap between 200 and 500
-      Group("second", Rectangle(500, 0, 700, 100))
+      //there's a horizontal gap here
+      Group("second", Rectangle(0, 150, 10, 300))
     ))
 
-    val contour = Rectangle(201, 50, 499, 70)
+    val contour = Rectangle(201, 50, 300, 149)
     val resultDocument = underTest.add(contour, currentDocument)
-    assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 700, 100)))
+    assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 300, 300)))
   }
 
 }
