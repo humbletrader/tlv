@@ -1,6 +1,6 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Group, Rectangle, ScanConfig, ScannedDocument}
+import com.humbletrader.tlv.data.{Group, Rectangle, ToleranceConfig, ScannedDocument}
 import org.scalatest.FunSuite
 
 class DocumentOpsTest extends FunSuite{
@@ -8,7 +8,7 @@ class DocumentOpsTest extends FunSuite{
   private val underTest = new DocumentOps{}
 
   test("find close enough groups"){
-    implicit val config : ScanConfig = ScanConfig(1)
+    implicit val config : ToleranceConfig = ToleranceConfig(1)
 
     val document = Set(
       Group("close on left", Rectangle(0, 0, 99, 99)),
@@ -21,10 +21,10 @@ class DocumentOpsTest extends FunSuite{
     assert(closeEnoughGroups.map(_.name) == Set("close on left", "close on right"))
   }
 
-  implicit val config : ScanConfig = ScanConfig(1)
+  implicit val config : ToleranceConfig = ToleranceConfig(1)
 
   test("adding contour on empty document"){
-    val resultDocument = underTest.add(Rectangle(100,100,200,200), ScannedDocument(Seq.empty))
+    val resultDocument = underTest.addContour(Rectangle(100,100,200,200), ScannedDocument(Seq.empty))
     assert(resultDocument.groups.map(_.boundaries) == Seq(Rectangle(100, 100, 200, 200)))
   }
 
@@ -34,7 +34,7 @@ class DocumentOpsTest extends FunSuite{
       Group("footer", Rectangle(0, 900, 1000, 1000))
     ))
 
-    val resultDocument = underTest.add(contour, currentDocument)
+    val resultDocument = underTest.addContour(contour, currentDocument)
     assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(100, 100, 200, 200), Rectangle(0, 900, 1000, 1000)))
   }
 
@@ -44,7 +44,7 @@ class DocumentOpsTest extends FunSuite{
       Group("header", Rectangle(0, 0, 200, 100))
     ))
 
-    val resultDocument = underTest.add(contour, currentDocument)
+    val resultDocument = underTest.addContour(contour, currentDocument)
     assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 300, 100)))
   }
 
@@ -62,7 +62,7 @@ class DocumentOpsTest extends FunSuite{
     ))
 
     val contour = Rectangle(201, 50, 499, 70)
-    val resultDocument = underTest.add(contour, currentDocument)
+    val resultDocument = underTest.addContour(contour, currentDocument)
     assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 700, 100)))
   }
 
@@ -85,7 +85,7 @@ class DocumentOpsTest extends FunSuite{
     ))
 
     val contour = Rectangle(201, 50, 300, 149)
-    val resultDocument = underTest.add(contour, currentDocument)
+    val resultDocument = underTest.addContour(contour, currentDocument)
     assert(resultDocument.groups.map(_.boundaries).toSet == Set(Rectangle(0, 0, 300, 300)))
   }
 

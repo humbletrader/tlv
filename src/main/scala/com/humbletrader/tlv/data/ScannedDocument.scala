@@ -5,5 +5,10 @@ object ScannedDocument{
 }
 
 case class ScannedDocument(groups: Seq[Group]) {
-
+  override def toString: String =
+    s"""
+      | ScannedDocument(
+      | ${groups}
+      |)
+      |""".stripMargin
 }

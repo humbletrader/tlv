@@ -4,7 +4,12 @@ import com.humbletrader.tlv.data.{Point, Rectangle}
 
 trait RectangleOps {
 
-  def enclosingRectangle(rectangles: Set[Rectangle]) : Rectangle = {
+  /**
+   * computes the coordinates of a rectangle which contains all given set of rectangles
+   * @param rectangles
+   * @return
+   */
+  def computeEnclosingRectangle(rectangles: Set[Rectangle]) : Rectangle = {
 
     val (upperLeftX, upperLeftY, lowerRightX, lowerRightY) =
       rectangles.map(rect =>

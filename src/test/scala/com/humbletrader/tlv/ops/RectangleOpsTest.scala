@@ -8,7 +8,7 @@ class RectangleOpsTest extends FunSuite{
   private val underTest = new RectangleOps{}
 
   test("enclosing rectangles when they don't overlap"){
-    val enclosingRectangle = underTest.enclosingRectangle(Set(
+    val enclosingRectangle = underTest.computeEnclosingRectangle(Set(
       Rectangle(0, 0, 100, 100),
       Rectangle(200, 200, 300, 300)
     ))
@@ -17,7 +17,7 @@ class RectangleOpsTest extends FunSuite{
   }
 
   test("enclosing rectangles when they overlap"){
-    val enclosing = underTest.enclosingRectangle(Set(
+    val enclosing = underTest.computeEnclosingRectangle(Set(
       Rectangle(100, 100, 200, 200),
       Rectangle(110, 110, 250, 250),
       Rectangle(50, 170, 150, 350)
@@ -27,7 +27,7 @@ class RectangleOpsTest extends FunSuite{
   }
 
   test("enclosing one single rectangle") {
-    val enclosing = underTest.enclosingRectangle(Set(
+    val enclosing = underTest.computeEnclosingRectangle(Set(
       Rectangle(100, 100, 200, 200)
     ))
 

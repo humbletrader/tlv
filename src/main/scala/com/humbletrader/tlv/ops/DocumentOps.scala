@@ -1,15 +1,24 @@
 package com.humbletrader.tlv.ops
 
-import com.humbletrader.tlv.data.{Group, Rectangle, ScanConfig, ScannedDocument}
+import com.humbletrader.tlv.data.{Group, Rectangle, ToleranceConfig, ScannedDocument}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
-
+/**
+ * document operations
+ */
 trait DocumentOps extends GroupOps with RectangleOps {
 
+  /**
+   * finds the closest groups to the given rectangle
+   * @param rect
+   * @param groups
+   * @param config
+   * @return
+   */
   def findCloseGroups(rect: Rectangle, groups: collection.Set[Group])
-                     (implicit config: ScanConfig) : Set[Group] = {
+                     (implicit config: ToleranceConfig) : Set[Group] = {
     groups.foldLeft(ArrayBuffer.empty[Group]){(agg, group) =>
         if(isRectangleClose(rect, group)) agg += group
         else agg
@@ -17,8 +26,15 @@ trait DocumentOps extends GroupOps with RectangleOps {
       .toSet
   }
 
-  def add(rect: Rectangle, document: ScannedDocument)
-         (implicit config: ScanConfig) : ScannedDocument = {
+  /**
+   * adds a new contour to the given document
+   * @param rect
+   * @param document
+   * @param config
+   * @return
+   */
+  def addContour(rect: Rectangle, document: ScannedDocument)
+                (implicit config: ToleranceConfig) : ScannedDocument = {
 
     var expandingRectangle = rect
     val resultGroups = mutable.HashSet[Group](document.groups: _*) //todo : change this
@@ -27,7 +43,7 @@ trait DocumentOps extends GroupOps with RectangleOps {
     do{
       closeEnoughGroups = findCloseGroups(expandingRectangle, resultGroups)
       //expand the current rectangle to include the close enough groups
-      expandingRectangle = enclosingRectangle(
+      expandingRectangle = computeEnclosingRectangle(
         //todo: change this append
         Set(expandingRectangle) ++ closeEnoughGroups.map(_.boundaries)
       )
