@@ -10,12 +10,8 @@ trait DocumentOps extends GroupOps with RectangleOps {
 
   def findCloseGroups(rect: Rectangle, groups: collection.Set[Group])
                      (implicit config: ScanConfig) : Set[Group] = {
-    groups
-      .foldLeft(ArrayBuffer.empty[Group]){(agg, group) =>
-        if(isRectangleCloseOnRight(rect, group) ||
-          isRectangleCloseOnLeft(rect, group) ||
-          isRectangleCloseAbove(rect, group)
-        ) agg += group
+    groups.foldLeft(ArrayBuffer.empty[Group]){(agg, group) =>
+        if(isRectangleClose(rect, group)) agg += group
         else agg
       }
       .toSet

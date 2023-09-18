@@ -12,11 +12,11 @@ class DocumentOpsTest extends FunSuite{
 
     val document = Set(
       Group("close on left", Rectangle(0, 0, 99, 99)),
-      Group("noFriend", Rectangle(0, 100, 98, 199)),
-      Group("close on right", Rectangle(201, 1, 400, 2))
+      Group("not close", Rectangle(0, 100, 98, 199)),
+      Group("close on right", Rectangle(201, 150, 400, 200))
     )
 
-    val closeEnoughGroups = underTest.findCloseGroups(Rectangle(100,100, 200, 200), document)
+    val closeEnoughGroups = underTest.findCloseGroups(Rectangle(100, 100, 200, 200), document)
 
     assert(closeEnoughGroups.map(_.name) == Set("close on left", "close on right"))
   }
