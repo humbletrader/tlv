@@ -38,7 +38,7 @@ trait DocumentOps extends GroupOps with ContourOps {
 
     var expandingRectangle = rect
     val resultGroups = document.groups.to[collection.mutable.Set]
-    var closeEnoughGroups : Set[ContourGroup] = Set.empty
+    var closeEnoughGroups = Set.empty[ContourGroup]
 
     do{
       closeEnoughGroups = findCloseGroups(expandingRectangle, resultGroups)
